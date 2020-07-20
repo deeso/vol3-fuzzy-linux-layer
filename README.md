@@ -4,7 +4,7 @@ There is no short-cut for good work.
 ## vol3-fuzzy-linux-layers
 Volatility 3 has a strict symbol table strict policy, where specific symbols must precisely match the specific Linux Kernel version and overall banner.  This policy is necessary to help keep wayward users from making mistakes.  However, for _power_ users or quick triage, this constraint can slow down the initial process.  
 
-This layer helps relax that policy and removes any obligation of the project to deviate from a well intended policy. This layer give users the power to side-step te policy but places the responsibility on the user.
+This layer helps relax that policy and removes any obligation of the project to deviate from a well intended policy. This layer give users the power to side-step the policy making the user responsibile for any outcomes and problems.
 
 If a user leverages this layer, they should note the following issues:
 1. The analysis results could be __very__ inaccurate and unrepresentative of what is actually present in memory
