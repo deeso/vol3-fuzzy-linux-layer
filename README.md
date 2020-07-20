@@ -32,3 +32,29 @@ git clone https://github.com/deeso/vol3-fuzzy-linux-layer
 cp vol3-fuzzy-linux-layer/src/fuzzy_linux_layer.py volatility3/volatility/framework/layers/
 python setup.py install
 ```
+
+## How to use this in practice?
+
+One of the most cumbersome taska in Linux memory analysis requires setting Linux Kernel (LK) profile.  This task is cumbersome because the LK changes frequently on platforms and distros.  These changes come in the form of recompilation of kernel code due to bug fixes, new features and security patches.  When the kernel is recompiled, structures and their location in memory can change.  Structures may be moved from one memory offset to another, and the size of structures could change (also changing offsets).  This mean one LK version can not be used to analyze all LK memory dumps.
+
+
+All this being said, the LK may not change too drastically from one version to the next.  So, when there are small variations between the LK versions it might be possible to use a close relative.
+
+### Use Case 
+There is a LK memory dump for __Linux version 5.4.0-40-generic__ on Ubuntu, but this kernel does not have any debug symbols nor is there a package with debug symbols. _There_ is a software package for __Linux version 5.4.0-42-generic__ with debug symbols.  _Why not use this LK to generate the required symbols and then analyze the target image?_ Well, Volatility3 requires that the banner matches the LK exactly so it will fail to analyze.  
+
+Prequisites to using this code:
+1. Install the target kernel package or compile a similar LK locally.
+2. Use `dwarf2json` to extract  the symbols from the LK binary with symbols
+3. Copy the symbols into the volatility symbols directory
+4. run `vol` after placing the `src/fuzzy_linux_layer.py` with `-s` flag pointing at the symbols directory
+
+How this code works:
+1. First it lets `vol` attempt to resolve the LK symbols for the memory dump in the natural way
+2. If this fails, the `FuzzyLinuxIntelStacker` attempts to analyze the memory image
+    1. This stacker uses a _regular expression_ (e.g. based on Linux version ...)
+    2. As it iterates over each results, the stacker extracts the Linux _version_, _major-minor_ relase number (e.g. `5.4.0`), _tag_ (e.g. `generic`, `aws`, etc.) and distro (e.g. `Ubuntu`, `centos`, etc.)
+    3. It then compares the attributes against the __known__ LK banners in the symbols.
+    4. If identified banner matches the banner of a known set of symbols, then the known LK symbols set is used.  To match all of the following must be equal: _major-minor_ release, _tag_ and _distro_.
+  
+So, in this case __Linux version 5.4.0-40-generic__ can be matched with __Linux version 5.4.0-42-generic__ for a very quick triage. 
