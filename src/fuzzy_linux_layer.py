@@ -9,7 +9,8 @@ from typing import List, Optional, Tuple, Type
 from volatility.framework import interfaces, constants, exceptions
 from volatility.framework import objects
 from volatility.framework.automagic import symbol_cache, symbol_finder
-from volatility.framework.automagic.linux import LinuxBannerCache, LinuxSymbolFinder, LinuxIntelStacker, LinuxUtilities
+from volatility.framework.automagic.linux import LinuxBannerCache, LinuxSymbolFinder, LinuxIntelStacker
+from volatility.framework.symbols.linux import LinuxUtilities
 from volatility.framework.layers import intel, scanners
 from volatility.framework.symbols import linux
 
